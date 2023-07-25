@@ -2,7 +2,6 @@ FROM debian:buster
 
 RUN apt update
 RUN apt upgrade -y
-RUN apt install curl -y
 
 RUN mkdir -p /etc/nginx/ssl
 RUN apt install openssl -y
@@ -12,4 +11,4 @@ RUN apt install nginx -y
 RUN mkdir -p /var/run/nginx
 COPY conf/nginx.conf /etc/nginx/nginx.conf
 
-CMD [ "nginx", "-g", "daemon off;" ]
+ENTRYPOINT [ "nginx", "-g", "daemon off;" ]
