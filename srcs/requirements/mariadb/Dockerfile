@@ -14,4 +14,4 @@ COPY conf/50-server.cnf /etc/mysql/mariadb.conf.d/50-server.cnf
 COPY /tools/script.sh /etc/mysql/dockerinit.sh
 RUN chmod 777 /etc/mysql/dockerinit.sh
 
-ENTRYPOINT [ "sh", "/etc/mysql/dockerinit.sh" ]
+ENTRYPOINT [ "bash", "/etc/mysql/dockerinit.sh" ]

@@ -11,4 +11,10 @@ RUN apt install nginx -y
 RUN mkdir -p /var/run/nginx
 COPY conf/nginx.conf /etc/nginx/nginx.conf
 
+# RUN touch /var/www/html/index.html
+# RUN echo "Welcome" > /var/www/html/index.html
+
+RUN chmod 755 /var/www/html
+RUN chown -R www-data:www-data /var/www/html
+
 ENTRYPOINT [ "nginx", "-g", "daemon off;" ]
