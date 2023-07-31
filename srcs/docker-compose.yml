@@ -7,8 +7,17 @@ networks:
 volumes:
   mariadb_data:
     driver: local
+    driver_opts:
+      type: volumes
+      o: bind
+      device:  /home/ilandols/data/wordpress
+  
   wordpress_data:
     driver: local
+    driver_opts:
+      type: volumes
+      o: bind
+      device:  /home/ilandols/data/mariadb
 
 services:
   mariadb:
@@ -23,8 +32,6 @@ services:
     env_file:
       - ./.env
     restart: always
-    expose:
-      - "3306"
 
   wordpress:
     depends_on:
@@ -37,12 +44,9 @@ services:
       - wordpress_data:/var/www/wordpress
     expose:
       - "9000"
-      - "3306"
     env_file:
       - ./.env
     restart: always
-    expose:
-      - "9000"
     
   nginx:
     depends_on:
@@ -51,6 +55,8 @@ services:
     build: ./requirements/nginx
     networks:
       - inception
+    volumes:
+      - wordpress_data:/var/www/wordpress
     ports:
       - "443:443"
     env_file:

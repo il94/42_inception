@@ -1,17 +1,16 @@
 FROM debian:buster
 
-RUN apt update
-RUN apt upgrade -y
-
-RUN apt-get install git -y
-RUN apt-get install curl -y
-RUN apt-get install zsh -y
-RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" -y
-CMD [ "zsh" ]
+RUN apt-get update -y
+RUN apt-get upgrade -y
 
 RUN apt-get install mariadb-server -y
-COPY conf/50-server.cnf /etc/mysql/mariadb.conf.d/50-server.cnf
-COPY /tools/script.sh /etc/mysql/dockerinit.sh
-RUN chmod 777 /etc/mysql/dockerinit.sh
 
-ENTRYPOINT [ "bash", "/etc/mysql/dockerinit.sh" ]
+COPY conf/50-server.cnf /etc/mysql/mariadb.conf.d/50-server.cnf
+COPY /tools/mariadb_init.sh /etc/mysql/mariadb_init.sh
+RUN mkdir /run/mysqld && chown -R mysql:root /run/mysqld
+
+RUN chmod +x /etc/mysql/mariadb_init.sh
+
+EXPOSE 3306
+
+ENTRYPOINT [ "/etc/mysql/mariadb_init.sh" ]
