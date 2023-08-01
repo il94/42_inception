@@ -5,60 +5,60 @@ networks:
     driver: bridge
 
 volumes:
-  mariadb_data:
-    driver: local
-    driver_opts:
-      type: volumes
-      o: bind
-      device:  /home/ilandols/data/wordpress
-  
   wordpress_data:
     driver: local
     driver_opts:
       type: volumes
       o: bind
-      device:  /home/ilandols/data/mariadb
+      device: /home/ilandols/data/wordpress_data
+
+  mariadb_data:
+    driver: local
+    driver_opts:
+      type: volumes
+      o: bind
+      device: /home/ilandols/data/mariadb_data
 
 services:
   mariadb:
+    image: mariadb
     container_name: mariadb
     build: ./requirements/mariadb
+    env_file: ./.env
+    expose:
+      - "3306"
     networks:
       - inception
     volumes:
       - mariadb_data:/var/lib/mysql
-    expose:
-      - "3306"
-    env_file:
-      - ./.env
     restart: always
 
   wordpress:
+    image: wordpress
     depends_on:
       - mariadb
     container_name: wordpress
     build: ./requirements/wordpress
+    env_file: ./.env
+    expose:
+      - "9000"
     networks:
       - inception
     volumes:
-      - wordpress_data:/var/www/wordpress
-    expose:
-      - "9000"
-    env_file:
-      - ./.env
+      - wordpress_data:/var/www/html
     restart: always
-    
+
   nginx:
+    image: nginx
     depends_on:
       - wordpress
     container_name: nginx
     build: ./requirements/nginx
+    env_file: ./.env
+    ports:
+      - "443:443"
     networks:
       - inception
     volumes:
-      - wordpress_data:/var/www/wordpress
-    ports:
-      - "443:443"
-    env_file:
-      - ./.env
+      - wordpress_data:/var/www/html
     restart: always
