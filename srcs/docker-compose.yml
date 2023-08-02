@@ -21,7 +21,7 @@ volumes:
 
 services:
   mariadb:
-    image: mariadb
+    image: mariadb:v42.0
     container_name: mariadb
     build: ./requirements/mariadb
     env_file: ./.env
@@ -34,7 +34,7 @@ services:
     restart: always
 
   wordpress:
-    image: wordpress
+    image: wordpress:v42.0
     depends_on:
       - mariadb
     container_name: wordpress
@@ -49,7 +49,7 @@ services:
     restart: always
 
   nginx:
-    image: nginx
+    image: nginx:v42.0
     depends_on:
       - wordpress
     container_name: nginx
